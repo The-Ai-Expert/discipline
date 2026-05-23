@@ -1,0 +1,26 @@
+{
+  "name": "theaiexpert-discipline",
+  "version": "0.1.0",
+  "description": "Production-grade orchestration discipline for Claude Code — Six Principles, hookify enforcement, SME agents, dispatch + verification slash commands. Packaged from real-world delivery at The Ai Expert.",
+  "author": {
+    "name": "The Ai Expert",
+    "email": "eschwaa@gmail.com",
+    "url": "https://github.com/The-Ai-Expert"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/The-Ai-Expert/discipline",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/The-Ai-Expert/discipline.git"
+  },
+  "keywords": [
+    "claude-code",
+    "orchestration",
+    "discipline",
+    "principles",
+    "hookify",
+    "adversarial-review",
+    "ai-engineering",
+    "code-review"
+  ]
+}
