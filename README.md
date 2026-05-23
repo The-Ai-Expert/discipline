@@ -118,6 +118,77 @@ Anthropic's `hookify` plugin discovers rules via a glob on `~/.claude/hookify.*.
 
 ---
 
+## Status: early — testing in progress
+
+This plugin is **v0.1.0** and actively seeking real-world test feedback before we recommend wider adoption. If you've installed it: **welcome, and thank you**. We want to hear what works, what's confusing, and what's broken. See [Test feedback](#test-feedback) below.
+
+---
+
+## Try it — tester smoke checklist
+
+After running through the [Install](#install) section, walk this checklist to confirm the plugin actually works in your environment. This is the verification that the install succeeded — proxy-vs-behavior in action (Principle #5).
+
+### Smoke test 1 — Hook discovery
+
+Open a fresh Claude Code session (so hookify re-scans rules) and run:
+
+```bash
+ls ~/.claude/hookify.theaiexpert-*.local.md | wc -l
+# Expected: 10
+```
+
+If you see a number other than 10, `/install-hooks` either didn't run or didn't complete. Re-run `/install-hooks` and check the output.
+
+### Smoke test 2 — `enforce-dispatch-discipline` hook fires
+
+In any project, write a dummy dispatch file:
+
+```bash
+mkdir -p .reports/dispatches
+cat > .reports/dispatches/dispatch_smoke_test.md <<'EOF'
+# Dispatch: smoke test
+This is a dispatch file written to verify the hook fires.
+EOF
+```
+
+The `theaiexpert-enforce-dispatch-discipline` hook should fire and show the dispatch checklist warning. If it doesn't fire, hookify either isn't installed/enabled, or the rule didn't load. Run `claude plugin list | grep hookify` to confirm hookify is enabled.
+
+### Smoke test 3 — `/dispatch` slash command resolves
+
+In a fresh prompt, type `/dispatch` and press Tab. Claude Code should offer it as an autocomplete option. Invoke it. The full dispatch template should render.
+
+### Smoke test 4 — Six Principles skill loads
+
+Ask Claude `"What are the Six Principles?"` — Claude should be able to recite them with the canonical mechanics + failure modes per principle. The `skills/six-principles.md` content is the source of truth.
+
+### Smoke test 5 — `require-unverified-section` hook fires
+
+In any project, write a `.reports/test-report.md` file that doesn't contain the word "Unverified" — the hook should fire and remind you to add the `## Verified` / `## Unverified — reviewer please decide` shape.
+
+If all five smoke tests pass, the plugin is functioning end-to-end in your environment. 🎯
+
+---
+
+## Test feedback
+
+If you're an early tester: please file findings as a GitHub issue.
+
+**File a structured test report:** [Open a new issue with the test-feedback template](https://github.com/The-Ai-Expert/discipline/issues/new?template=test-feedback.md) — or just open a free-form issue at [github.com/The-Ai-Expert/discipline/issues](https://github.com/The-Ai-Expert/discipline/issues).
+
+**What we most want to know:**
+
+1. **Install friction** — was anything confusing in the install + `/install-hooks` flow? Did any step assume context you didn't have?
+2. **Hook noise** — are any of the 10 rules firing too often, too rarely, or with messages that aren't actionable?
+3. **README clarity** — what would a fresh reader want explained that we left implicit?
+4. **Workflow fit** — does the Workflow 1/2/3 in Quick Start match how you actually ship work? Where does it break?
+5. **Skill / agent surfaces** — did the Six Principles skill actually surface when relevant? Did the SME agents load when invoked?
+
+Be specific. Quoting the exact error message or the exact line of README that confused you is more useful than "X is broken."
+
+If something is just plain wrong — open an issue and we'll fix it.
+
+---
+
 ## Quick start
 
 Three workflows the plugin enables:
