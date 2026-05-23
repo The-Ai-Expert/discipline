@@ -1,5 +1,5 @@
 ---
-name: enforce-dispatch-discipline
+name: theaiexpert-enforce-dispatch-discipline
 enabled: true
 event: file
 action: warn

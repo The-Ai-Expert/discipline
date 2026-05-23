@@ -1,5 +1,5 @@
 ---
-name: check-deploy-after-merge
+name: theaiexpert-check-deploy-after-merge
 enabled: true
 event: bash
 pattern: gh\s+pr\s+merge

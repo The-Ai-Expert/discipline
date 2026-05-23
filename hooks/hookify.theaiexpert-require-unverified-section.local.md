@@ -1,5 +1,5 @@
 ---
-name: require-unverified-section
+name: theaiexpert-require-unverified-section
 enabled: true
 event: file
 action: warn

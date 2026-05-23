@@ -1,5 +1,5 @@
 ---
-name: warn-raw-sql-columns
+name: theaiexpert-warn-raw-sql-columns
 enabled: true
 event: file
 action: warn

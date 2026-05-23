@@ -1,5 +1,5 @@
 ---
-name: warn-direct-main-push
+name: theaiexpert-warn-direct-main-push
 enabled: true
 event: bash
 pattern: git\s+push.*main|git\s+push\s+origin\s*$

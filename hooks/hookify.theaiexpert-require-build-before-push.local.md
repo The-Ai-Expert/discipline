@@ -1,5 +1,5 @@
 ---
-name: require-build-before-push
+name: theaiexpert-require-build-before-push
 enabled: true
 event: bash
 pattern: git\s+push

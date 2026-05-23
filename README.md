@@ -29,7 +29,7 @@ You don't have to remember the rules. The hooks make them visible at the right t
 1. **Think before coding** — state your assumptions; ask when unsure; never guess
 2. **Simplicity first** — minimum code that solves the problem; no unrequested abstractions
 3. **Surgical changes** — every changed line traces back to the originating ask
-4. **Goal-driven execution** — verifiable success criteria written *before* any action
+4. **Goal-driven execution** — verifiable success criteria written *before* any action; failing test reproduces the bug before the fix, acceptance list precedes the feature
 5. **Verify the behavior, not the proxy** — tests green is not behavior verified; reproduce the user-facing outcome
 6. **Finish what you started** — no mid-flight amendments to in-flight work; if new scope can't wait, spawn a new dispatch rather than interrupt the current one
 
@@ -56,6 +56,8 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 
 **`commands/`** — slash commands you invoke directly:
 
+- `/install-hooks` — One-shot copy of plugin rules into your hookify namespace (run once after install)
+- `/uninstall-hooks` — Pairs with `/install-hooks` for clean removal / updates
 - `/dispatch` — Scaffolds a compliant worker dispatch file
 - `/verify` — Walks a structured live-verification of recently-shipped work
 
@@ -75,6 +77,18 @@ Add your own agents for the SMEs your team needs.
 
 ## Install
 
+### Prerequisite — install Anthropic's `hookify` plugin
+
+This plugin **relies on** Anthropic's `hookify` plugin (from `claude-plugins-official`) for hook discovery and rule evaluation. We do not reimplement that machinery. Verify or install it first:
+
+```bash
+claude plugin list | grep hookify
+# If not present:
+claude plugin install hookify
+```
+
+### Install this plugin
+
 ```bash
 # Once the marketplace listing is live:
 claude plugin install The-Ai-Expert/discipline
@@ -83,11 +97,24 @@ claude plugin install The-Ai-Expert/discipline
 git clone https://github.com/The-Ai-Expert/discipline.git ~/.claude/plugins/cache/local/theaiexpert-discipline
 ```
 
-Then restart Claude Code. The plugin's hooks register globally; skills + commands are available immediately.
+### Wire the hookify rules into your environment
 
-Confirm the install:
-- Write a dummy dispatch file at `.reports/dispatches/dispatch_test.md` — the `enforce-dispatch-discipline` hook should fire
-- Run `git commit` in any project — the `require-simplify-before-commit` hook should fire
+After the plugin is installed, run **`/install-hooks`** once. This copies the plugin's ten `hookify.theaiexpert-*.local.md` rules into `~/.claude/` — the namespace where hookify discovers them at runtime.
+
+```
+/install-hooks
+```
+
+Then **restart Claude Code** so hookify picks up the new rules.
+
+### Confirm
+
+- Try writing a dispatch file at `.reports/dispatches/dispatch_test.md` — the `theaiexpert-enforce-dispatch-discipline` rule should fire with the dispatch checklist
+- Run `git commit` in any project — the `theaiexpert-require-simplify-before-commit` rule should fire
+
+### Why the manual `/install-hooks` step
+
+Anthropic's `hookify` plugin discovers rules via a glob on `~/.claude/hookify.*.local.md` — it does not scan plugin install paths. To make plugin-provided rules discoverable, they must live in that namespace. `/install-hooks` does the one-time copy idempotently; `/uninstall-hooks` reverses it cleanly. We deliberately do not write our own hook discovery machinery — hookify is the canonical Anthropic primitive and we rely on it entirely.
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "theaiexpert-discipline",
   "version": "0.1.0",
-  "description": "Production-grade orchestration discipline for Claude Code — Six Principles, hookify enforcement, SME agents, dispatch + verification slash commands. Packaged from real-world delivery at The Ai Expert.",
+  "description": "Production-grade orchestration discipline for Claude Code — Six Principles, hookify-based enforcement, SME agents, dispatch + verification slash commands. Packaged from real-world delivery at The Ai Expert. Requires Anthropic's hookify plugin for rule evaluation.",
   "author": {
     "name": "The Ai Expert",
     "email": "eschwaa@gmail.com",

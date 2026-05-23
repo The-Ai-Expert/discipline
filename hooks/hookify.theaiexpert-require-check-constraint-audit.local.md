@@ -1,5 +1,5 @@
 ---
-name: require-check-constraint-audit
+name: theaiexpert-require-check-constraint-audit
 enabled: true
 event: file
 action: block

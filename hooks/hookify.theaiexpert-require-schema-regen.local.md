@@ -1,5 +1,5 @@
 ---
-name: require-schema-regen
+name: theaiexpert-require-schema-regen
 enabled: true
 event: file
 action: warn

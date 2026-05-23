@@ -1,5 +1,5 @@
 ---
-name: require-simplify-before-commit
+name: theaiexpert-require-simplify-before-commit
 enabled: true
 event: bash
 pattern: git\s+commit

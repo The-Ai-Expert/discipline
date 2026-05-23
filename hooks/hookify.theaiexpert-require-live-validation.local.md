@@ -1,5 +1,5 @@
 ---
-name: require-live-validation
+name: theaiexpert-require-live-validation
 enabled: true
 event: stop
 pattern: .*
