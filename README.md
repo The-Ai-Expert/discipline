@@ -39,7 +39,7 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 
 ## What's in the box
 
-**`hooks/`** — 10 hookify rules that fire on specific events:
+**`hooks/`** — 11 hookify rules that fire on specific events:
 
 | Rule | Fires on | Purpose |
 |---|---|---|
@@ -47,6 +47,7 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 | `require-unverified-section` | Writing a `.reports/*.md` | Enforce explicit proxy-vs-behavior accounting |
 | `require-simplify-before-commit` | `git commit` | Reminder to run `/simplify` (Principle #2) |
 | `require-build-before-push` | `git push` | Reminder to verify the build before pushing |
+| `suggest-adversarial-review` | `gh pr create` | Reminder to run `/adversarial-review` (or equivalent) before merge |
 | `require-live-validation` | Session stop | Reminder that "done" needs live evidence, not just proxy |
 | `check-deploy-after-merge` | `gh pr merge` | Walk the deploy verification: CI + bundle hash + functional spot-check |
 | `warn-direct-main-push` | `git push origin main` | Flag whether direct-to-main is appropriate for this change |
@@ -65,6 +66,7 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 
 - `six-principles` — the canonical principle treatment
 - `onboarding` — new-user orientation
+- `codex-review-hybrid-policy` — when to use `/adversarial-plan` vs `/adversarial-review` vs your own multi-iteration loop
 
 **`agents/`** — specialised review agents:
 
@@ -77,14 +79,24 @@ Add your own agents for the SMEs your team needs.
 
 ## Install
 
-### Prerequisite — install Anthropic's `hookify` plugin
+### Prerequisites — install supporting plugins
 
-This plugin **relies on** Anthropic's `hookify` plugin (from `claude-plugins-official`) for hook discovery and rule evaluation. We do not reimplement that machinery. Verify or install it first:
+This plugin **relies on** two existing Claude Code plugins (we do not reimplement what already exists):
+
+**1. `hookify`** (from `claude-plugins-official`) — provides hook discovery + rule evaluation for the 11 rules this plugin ships.
 
 ```bash
 claude plugin list | grep hookify
 # If not present:
 claude plugin install hookify
+```
+
+**2. `adversarial-review`** (from `claude-community`) — provides `/adversarial-review` and `/adversarial-plan` slash commands. The discipline plugin's hooks and skills reference these for the review layer; install them so the references resolve.
+
+```bash
+claude plugin list | grep adversarial-review
+# If not present:
+claude plugin install adversarial-review
 ```
 
 ### Install this plugin
@@ -134,10 +146,10 @@ Open a fresh Claude Code session (so hookify re-scans rules) and run:
 
 ```bash
 ls ~/.claude/hookify.theaiexpert-*.local.md | wc -l
-# Expected: 10
+# Expected: 11
 ```
 
-If you see a number other than 10, `/install-hooks` either didn't run or didn't complete. Re-run `/install-hooks` and check the output.
+If you see a number other than 11, `/install-hooks` either didn't run or didn't complete. Re-run `/install-hooks` and check the output.
 
 ### Smoke test 2 — `enforce-dispatch-discipline` hook fires
 
