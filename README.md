@@ -31,7 +31,7 @@ You don't have to remember the rules. The hooks make them visible at the right t
 3. **Surgical changes** — every changed line traces back to the originating ask
 4. **Goal-driven execution** — verifiable success criteria written *before* any action
 5. **Verify the behavior, not the proxy** — tests green is not behavior verified; reproduce the user-facing outcome
-6. **Finish what you started** — once work is dispatched, it owns its scope; no mid-flight amendments
+6. **Finish what you started** — no mid-flight amendments to in-flight work; if new scope can't wait, spawn a new dispatch rather than interrupt the current one
 
 Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 
