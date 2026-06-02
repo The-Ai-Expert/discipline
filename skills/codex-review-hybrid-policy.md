@@ -76,6 +76,18 @@ Use for: long-running work, work that benefits from custom rubric (e.g., the Six
 
 When in doubt: your own pattern is more conservative (more humans-in-loop, slower, preserves more invariants). `/adversarial-review` is faster but auto-applies fixes.
 
+## Iterating to a clean verdict — converge, don't count
+
+When a reviewer keeps blocking, two failure modes are worse than the original bug:
+
+1. **Hard round-caps.** "Stop after 4 rounds" is arbitrary. A rigorous reviewer can legitimately take 10+ passes. The signal that matters is **convergence**: are the findings shrinking / getting smaller / shifting to new ground (→ keep going), or is it the **same class of issue every round** (→ wrong approach)?
+
+2. **Whack-a-mole on a leaky design.** If the reviewer bypasses your fix the same *way* three+ times (e.g. a denylist it keeps finding new inputs to slip past), the loop is telling you the **design is wrong**, not that you need one more pattern. Stop patching.
+
+**At ~3–4 non-converging rounds, run the meta-check:** ask the reviewer directly — *"given these repeated findings on X, are we on the right design path, and what do you recommend?"* A good reviewer proposes the cleaner design, not just the next blocker. Use that recommendation; surface it to the human before grinding more rounds.
+
+**The pattern that usually ends the whack-a-mole: guard at the boundary, not at the surface.** A UI/client-side denylist can always be bypassed (encoding tricks, manipulated state, an unguarded second consumer). Enforce the invariant at the **authoritative write/trust boundary** (the server endpoint that persists the value, the single point all callers funnel through) and demote the surface check to a UX affordance. One boundary guard beats an unbounded enumeration of bad inputs.
+
 ## Tied principle
 
-Principle #2 — **Simplicity first.** Use the lightest review tier that produces the safety you need. Don't run a multi-day worker loop on a one-line typo fix; don't run `/adversarial-review` on a spec that hasn't been written yet. Match review weight to scope weight.
+Principle #2 — **Simplicity first.** Use the lightest review tier that produces the safety you need. Don't run a multi-day worker loop on a one-line typo fix; don't run `/adversarial-review` on a spec that hasn't been written yet. Match review weight to scope weight. And — Principle #5 (**verify the behavior, not the proxy**): a clean reviewer verdict is a strong proxy, but the boundary guard above is what actually makes the invariant true.
