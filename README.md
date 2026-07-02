@@ -37,6 +37,24 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 
 ---
 
+## The delivery lifecycle
+
+Every feature, no matter how small, runs the same flow. The principles are the *why*; this is the *when*. Bug fixes and trivial patches may skip Spec and Plan, but never the failing test, the review, or the behaviour verification.
+
+1. **Spec** - write down what "done" looks like before any code.
+2. **Plan** - tasks, dependencies, acceptance criteria.
+3. **Ticket** - create the tracked issue from the approved spec, before code.
+4. **Branch** - off freshly-fetched `origin/main` (never local `main`, which lags); scan recently-merged PRs on the target files first.
+5. **Implement** - failing test first (Principle #4), minimum surgical diff (Principles #2, #3).
+6. **Simplify** - run `/simplify` before commit; fix what it finds.
+7. **PR** - summary plus `Verified` / `Unverified` sections (Principle #5).
+8. **Adversarial review** - independent gate; schema, CI, and infrastructure changes never self-merge.
+9. **Merge + CI/CD** - merge on a clean gate; watch the deploy actually land.
+10. **Verify behaviour** - reproduce the user-facing outcome in the real environment; anything not yet verified goes on the verify-debt ledger, never silently "done".
+11. **Close the loop** - update the tracker, capture the report, retire or waive the verify-debt item.
+
+---
+
 ## What's in the box
 
 **`hooks/`** — 11 hookify rules that fire on specific events:
@@ -67,6 +85,9 @@ Read the full treatment: [`skills/six-principles.md`](skills/six-principles.md).
 - `six-principles` — the canonical principle treatment
 - `onboarding` — new-user orientation
 - `codex-review-hybrid-policy` — when to use `/adversarial-plan` vs `/adversarial-review` vs your own multi-iteration loop
+- `layered-orchestration` - the two-layer agentic team model: per-project orchestrators dispatching workers, a lead orchestrator above them owning completeness and protocol
+- `verify-debt-ledger` - killing the silent "waiting to verify" queue: track proxy-verified-but-not-behaviour-verified work as an explicit, batched ledger
+- `evidence-chain` - evidence before conclusion: walk the full chain before naming a root cause, and suspect the checker before the checked
 
 **`agents/`** — specialised review agents:
 
