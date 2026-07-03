@@ -36,7 +36,7 @@ Use this to generate a dispatch file your orchestrator hands to a background wor
 
 ## Workflow
 
-1. **Branch** `[branch-name]` off `main`.
+1. **Fresh-context preflight** (before writing any code): `git fetch origin`, branch `[branch-name]` strictly off freshly-fetched `origin/main` (not local `main`), and scan recently-merged PRs touching the target files. If the seam moved, re-seat the work before starting. See "Fresh-context preflight" below.
 2. **Read** every file path referenced in this dispatch in your session before writing code.
 3. **Failing test first** (Principle #4): [name the test file + the contract it pins].
 4. **Implementation** — minimum diff that satisfies the acceptance criteria.
@@ -73,6 +73,27 @@ Use this to generate a dispatch file your orchestrator hands to a background wor
 - [ ] **#5 Verify behavior** — Live-verify step is named, not assumed
 - [ ] **#6 Finish what you started** — If new scope surfaces, spawn a new dispatch; don't interrupt this one
 ```
+
+## Fresh-context preflight - branch off what is actually current
+
+A worker that branches off a stale base builds on a seam that has already moved. Green tests on a stale base prove nothing: they prove the code works against last week's code, not against what is live now. This is especially treacherous during worktree-based work, where local `main` lags behind `origin/main` for as long as the worktrees are open.
+
+**Before the worker writes a line:**
+
+1. **Fetch first.** `git fetch origin`. Do not trust the local refs; they may be hours or days behind.
+2. **Branch off freshly-fetched `origin/main`, never local `main`.** `git checkout -b <branch> origin/main`. Local `main` is a convenience copy that drifts; `origin/main` is the shared truth.
+3. **Scan recently-merged PRs touching the target files.** If someone merged a change to the same files while this dispatch was being written, the seam you were briefed against no longer exists. Re-seat the work against the current shape before writing code. Building against a description of the code that is now false is a Principle #1 violation (recall instead of verify).
+
+**On delivery:**
+
+Verify branch freshness with an explicit merge-base against `origin/main` rather than trusting the worker's claimed base:
+
+```bash
+git fetch origin
+git merge-base --is-ancestor origin/main HEAD && echo "fresh: origin/main is an ancestor" || echo "STALE: rebase onto origin/main before merge"
+```
+
+A worker reporting "branched off main, all tests green" is a claim, not a fact (see `layered-orchestration` - no layer trusts the one below it). The merge-base check is the artefact that confirms it. If the base is stale, the tests re-run against the current base before the PR is considered green.
 
 ## When to use this command
 
