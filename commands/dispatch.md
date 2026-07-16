@@ -6,7 +6,15 @@ description: Scaffold a compliant worker dispatch file under .reports/dispatches
 
 Use this to generate a dispatch file your orchestrator hands to a background worker. Fill in the bracketed sections; keep length under ~150 lines.
 
+> The ⛔⛔ env-rule header below is load-bearing, and template prose alone won't keep it present in hand-written dispatches — **gate it**: add a check to your dispatch-discipline hook (this repo ships `enforce-dispatch-discipline`) or a CI grep that rejects any `dispatches/*.md` missing the header.
+
 ```markdown
+⛔⛔ CRITICAL ENV RULE — READ FIRST: You are a BACKGROUND worker, ALREADY in
+[worktree-path] on branch [branch]. WORK IN PLACE. Do NOT create/switch/enter any
+worktree or cd elsewhere — an interactive prompt HANGS a bg session forever. If
+genuinely blocked, write worker-status/[your-id]-BLOCKED.md with the question,
+commit a one-line "docs: BLOCKED — [reason]", and STOP; do not sit on a prompt.
+
 # Dispatch: [one-line title — what shipping looks like]
 
 **Date:** [YYYY-MM-DD]

@@ -4,6 +4,8 @@
 
 Six development principles. Ten enforcement hooks. Two slash commands. Skills + agents. Packaged from real-world AI-assisted engineering delivery, distributed under MIT so any team can fork, adapt, and improve.
 
+**New here? Read [`PROCESS.md`](PROCESS.md) first** — the one-document narrative of the whole operating model (the team shape, the delivery loop, the review doctrine, worker discipline, truth-keeping, and the self-improving loop). The skills below are its executable form.
+
 ---
 
 ## What this is
@@ -88,6 +90,11 @@ Every feature, no matter how small, runs the same flow. The principles are the *
 - `layered-orchestration` - the two-layer agentic team model: per-project orchestrators dispatching workers, a lead orchestrator above them owning completeness and protocol
 - `verify-debt-ledger` - killing the silent "waiting to verify" queue: track proxy-verified-but-not-behaviour-verified work as an explicit, batched ledger
 - `evidence-chain` - evidence before conclusion: walk the full chain before naming a root cause, and suspect the checker before the checked
+- `deterministic-first` - the review doctrine: cheap deterministic gates check everything, the LLM reviews the residual, every recurring catch becomes a permanent gate (the flywheel) + "measure the guard, don't reason from code"
+- `agents-md-router` - the repo-root AGENTS.md router any coding agent (any vendor) reads first, and the self-review rule that keeps it honest against the actual tree
+- `background-workers` - non-interactive by construction: three enforcement layers, the canonical dispatch header, why status metadata is not liveness, and why parallel mutating workers need separate worktrees
+- `wip-registry` - derive-don't-trust work tracking: catch abandoned-at-N% (merged-but-never-wired) work AND false alarms; the grounding gate before net-new design; the PM boundary (feed priorities, never dispatch)
+- `retro-flywheel` - the self-improving loop: per-session friction retros → weekly distillation into permanent guards → artifact-checked adoption; the standard is same-day propagation
 
 **`agents/`** — specialised review agents:
 
