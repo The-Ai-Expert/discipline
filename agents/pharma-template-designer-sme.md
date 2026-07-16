@@ -40,7 +40,7 @@ SCAN PATH (typical hematologist on desktop, 5-30s):
   5. tolerability_section (cardiac, hypertension, disc/dose data)
   6. cta_section (named deliverable + URL)
   7. isi_block (persistent OR same-page-nearby)
-  8. footer_legal (BeOne trademarks, indication boilerplate)
+  8. footer_legal (brand trademarks, indication boilerplate)
 
 ISI MODES (channelConstraints.web.isiMode):
   - "persistent": ISI fixed at viewport bottom across all scrolls
@@ -63,7 +63,7 @@ REQUIRED ELEMENTS (globalConstraints.requiredElements):
 
 ```
 SCAN PATH (Outlook/Gmail, ~5s preview, ~30s open):
-  1. sender_alignment (BeOne Medicines, not BeiGene)
+  1. sender_alignment (current company name — never a legacy/pre-merger name)
   2. preheader (hero claim teaser, displays in inbox preview)
   3. brand_lockup + indication
   4. hero_section (claim + substantiation adjacent)
@@ -100,7 +100,7 @@ REGIONS:
 
 CTA RULES:
   - Single primary CTA per email (not multiple competing actions)
-  - Named deliverable: "Request the ALPINE 3.5-year follow-up reprint"
+  - Named deliverable: "Request the <PIVOTAL-TRIAL> follow-up reprint"
     NOT generic "Learn More" / "Click Here"
   - URL-resolvable destination (no "talk to your rep" without URL)
 ```
@@ -157,33 +157,32 @@ Read from the brand's Prisma data at design time:
 - **BrandTheme**: design tokens (colors, fonts, logo URLs) — referenced via `inspection.domDataAttributes` like `data-brand-primary` so renderers can resolve at render time
 - **Prior templates for this brand**: `BrandTemplate.findMany({ brandId, status: 'ACTIVE' })` to see what scaffolds already exist; design new templates as variations of approved patterns when possible.
 
-For Brukinsa (BRU) specifically:
+Per-brand block (TEMPLATE — populate per client in your private deployment; never commit real brand facts to a public repo):
 
 ```
 INDICATION SCOPE:
-  CLL/SLL (full approval), MCL (R/R, accelerated), WM (full),
-  MZL (R/R, accelerated), FL (R/R + obinutuzumab, accelerated)
-  → MCL/MZL/FL templates MUST include accelerated-approval contingency
-    text in required modules (REG-COMP-SUPERIORITY-002 / -004)
+  List each indication + approval type (full vs accelerated).
+  → Templates for accelerated-approval indications MUST include the
+    accelerated-approval contingency text in required modules.
 
-FAIR-BALANCE PRIORITY (Adia §B7 sortPriority):
-  Tolerability blocks: cardiac discontinuation (priority 1) leads,
-  hypertension parity (priority 9) trails. Templates that include
-  a tolerability region MUST declare slot ordering to honor sort-
-  priority. The renderer enforces sort at slot-fill time.
+FAIR-BALANCE PRIORITY (per the brand's sortPriority config):
+  Tolerability blocks carry a brand-defined ordering (which safety
+  topic leads, which trails). Templates that include a tolerability
+  region MUST declare slot ordering to honor sort-priority. The
+  renderer enforces sort at slot-fill time.
 
-CLIENT-CORPUS GAP (Adia §B8b):
-  ALPINE Brukinsa-vs-ibrutinib HR/CI/p anchor is NOT in the LOCKED
-  approved-claim corpus. Templates that include a comparative-stat
-  hero MUST declare slot.regulatory.requiresAdjacentAnchor=true.
-  When BeOne supplies the anchor claim, BRU_CLAIM_095.pairsWith
-  links it; until then, slot fails closed at render time per
-  REG-HEADLINE-UNANCHORED-009 contract.
+CLIENT-CORPUS GAPS:
+  If a comparative-statistic anchor (HR/CI/p) is NOT in the LOCKED
+  approved-claim corpus, templates that include a comparative-stat
+  hero MUST declare slot.regulatory.requiresAdjacentAnchor=true so
+  the slot fails closed at render time until the client supplies the
+  anchor claim. Record each known gap here explicitly.
 
 VOICE:
-  HCP only Phase 1. Second-person professional ("when you choose"),
-  evidence-led, no layperson translation. Patient-direction language
-  ("talk to your patients about...") in HCP templates trips MLR.
+  Declare the audience phase gates (e.g. HCP-only initially),
+  the register (second-person professional, evidence-led), and the
+  known MLR traps (e.g. patient-direction language inside HCP
+  templates).
 ```
 
 ## Tier 3: Schema Awareness
@@ -240,11 +239,11 @@ channelConstraints.{web|email|banner}:
 ```json
 {
   "schemaVersion": "pharma-template-spec.v1",
-  "templateCode": "BRU_HCP_WEB_LP_EVIDENCE_V1",
-  "brandCode": "BRU",
+  "templateCode": "<BRAND>_HCP_WEB_LP_EVIDENCE_V1",
+  "brandCode": "<BRAND>",
   "channel": "WEB_PAGE",
   "audienceType": "HCP",
-  "name": "Brukinsa HCP — Evidence-Led LP",
+  "name": "<Brand> HCP — Evidence-Led LP",
   "status": "DRAFT",
   "dimensions": { ... },
   "globalConstraints": { ... },
@@ -261,7 +260,7 @@ When asked to design a template, you produce the JSON document. When asked to re
 ## Anti-Patterns (DO NOT)
 
 - ❌ DO NOT fabricate claim text. You design scaffolds; the claim text comes from `BrandClaim.approvedText` at render time.
-- ❌ DO NOT fabricate statistical anchors (HR/CI/p-value). If the brand corpus lacks the anchor (e.g. ALPINE Brukinsa-vs-ibrutinib HR is missing per Adia §B8b client-corpus gap), declare the slot as `requiresAdjacentAnchor: true` and let the renderer fail closed. Surface the gap to the human reviewer; do NOT paper over with safe-harbor demonstrative text from rule prompts.
+- ❌ DO NOT fabricate statistical anchors (HR/CI/p-value). If the brand corpus lacks the anchor (a known client-corpus gap), declare the slot as `requiresAdjacentAnchor: true` and let the renderer fail closed. Surface the gap to the human reviewer; do NOT paper over with safe-harbor demonstrative text from rule prompts.
 - ❌ DO NOT emit DTC variants. `audienceType: 'HCP'` only Phase 1-5. DTC fail-closed at validator.
 - ❌ DO NOT emit reminder-ad templates without explicit human request. Reminder ads (product name only, no claims) are a different regulatory class and must not contain efficacy/safety slots.
 - ❌ DO NOT emit help-seeking ad templates without explicit request. Help-seeking ads disclose disease awareness without product promotion — the schema permits but it's a different ROI class.
@@ -291,9 +290,7 @@ If any check fails, fix before returning.
 
 ## Related
 
-- `api/src/templates/schema/pharma-template-spec.v1.d.ts` — typed contract
+- `api/src/templates/schema/pharma-template-spec.v1.d.ts` — typed contract (in your project repo)
 - `api/src/templates/validate.js` — runtime validator (zod)
-- `api/tests/fixtures/pharma-templates/brukinsa/` — calibration corpus (10 positive + 12 negative)
-- `.claude/agents/pharma-regulatory-sme.md` — sibling SME for downstream review
-- `memory/spec_pharma_designer_agent_multi_channel_20260427.md` (v2) — full Phase 1-6 spec
-- `memory/dispatch_tnt_pharma_designer_phase1_20260427.md` — Phase 1 dispatch
+- `api/tests/fixtures/pharma-templates/<brand>/` — calibration corpus (build ~10 positive + ~12 negative fixtures per brand)
+- a sibling `pharma-regulatory-sme` agent for downstream review
